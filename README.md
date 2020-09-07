@@ -1,1 +1,2 @@
 # generatorWordF
+自动生成word的前端部分，本地页面作为数据的入力窗口，生成一个json文件保存在out文件夹里，之后执行batch文件，会在out文件夹根据json数据生成一个word。
