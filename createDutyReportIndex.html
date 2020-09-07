@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="./js/jquery-3.5.1.js"></script>
+  <script type="text/javascript" src="./js/FileSaver.js" charset="utf-8"></script>
+  <script type="text/javascript" src="./js/func.js"></script>
+  <title>值班报告生成工具</title>
+</head>
+
+<body onload="firstOnload()">
+
+  <div id="titleDiv">
+    <span id="title" class=""></span><span id="time">上午</span><span>值班报告</span>
+  </div><br>
+  <div id="titleTipDiv">
+    <span>请选择值班报告时间段：</span>
+    <select id="selectTime" onchange="showTime()">
+      <option value="上午">上午</option>
+      <option value="下午">下午</option>
+      <option value="晚间">晚间</option>
+    </select>
+    <span>　</span>
+    <span>本页内容填写完成后请点击导出按钮将文件保存到out文件夹内：</span>
+    <input type="button" value="导出" onclick="getDataToJson()">
+  </div>
+
+  <input type="hidden"  id="dateInput">
+
+  <p><label class="subTitleFormat">A、已经解决的事情：</label></p>
+  <div class="tips"><b>操作说明：</b><br>
+    1、勾选“开启”选择框后可以输入内容。<br>
+    2、输入内容后点击“格式化”按钮可以自动补全最前面的序号。
+  </div>
+  <div class="inputContainer">
+    <div>
+      <textarea rows="5" cols="100" style="resize: none;" id="A_textarea" disabled="true">无</textarea>
+    </div>
+    <div class="funcContainer">
+      <input type="checkbox" value="" id="A_checkbox" onclick="checkboxFunc('A')">开启</input><br /><br />
+      <input type="button" value="格式化" style="margin-left:3px;" id="A_formatBtn" onclick="formatBtnFunc('A')">
+    </div>
+  </div>
+  <p><label class="subTitleFormat">B、没有解决的事情：</label></p>
+  <div class="tips"><b>操作说明：</b><br>
+    1、勾选“开启”选择框后可以输入内容。<br>
+    2、输入内容后点击“格式化”按钮可以自动补全最前面的序号。
+  </div>
+  <div class="inputContainer">
+    <div>
+      <textarea rows="5" cols="100" style="resize: none;" id="B_textarea" disabled="true">无</textarea>
+    </div>
+    <div class="funcContainer">
+      <input type="checkbox" value="" id="B_checkbox" onclick="checkboxFunc('B')">开启</input><br /><br />
+      <input type="button" value="格式化" style="margin-left:3px;" id="B_formatBtn" onclick="formatBtnFunc('B')">
+    </div>
+  </div>
+
+  <p><label class="subTitleFormat">C、需要告诉事务所的事情：</label></p>
+  <div id="Ccontainer">
+    <label class="subTitle">一）付款邮件相关：</label>
+    <div class="tips"><b>各按钮说明：</b><br>
+      1：会员套餐课程自动付款邮件，需要设置有效期限。<br>
+      2：会员购买点数套餐，需要手动设置。<br>
+      3：会员购买80点プレゼントポイント，需要手动加点。<br>
+      4：会员套餐课程自动付款邮件，系统已经自动设置，无需手动处理。<br>
+      5：会员取消了自动付款。<br>
+      -：删除最后一条记录。
+    </div>
+    <div><input type="button" value="1" class="c_button" onclick="createC1('1')">
+      <input type="button" value="2" class="c_button" onclick="createC1('2')">
+      <input type="button" value="3" class="c_button" onclick="createC1('3')">
+      <input type="button" value="4" class="c_button" onclick="createC1('4')">
+      <input type="button" value="5" class="c_button" onclick="createC1('5')">
+      <input type="button" value="-" class="c_button" onclick="removeLastRecordC1()">
+    </div>
+    <div id="C1_container">
+    </div>
+    <br>
+
+    <label class="subTitle">二）新会员入会相关：</label>
+    <div class="tips"><b>各按钮说明：</b><br>
+      +：增加一条记录。<br>
+      -：删除最后一条记录。
+    </div>
+    <div><input type="button" value="+" class="c_button" onclick="createC2()">
+      <input type="button" value="-" class="c_button" onclick="removeLastRecordC2()">
+    </div>
+    <div id="C2_container">
+    </div>
+    <br>
+
+    <label class="subTitle">三）会员联系邮件：</label>
+    <div class="tips"><b>各按钮说明：</b><br>
+      有回复：该会员邮件已经回复。<br>
+      无回复：该会员邮件没有回复。<br>
+      -：删除最后一条记录。
+    </div>
+    <div><input type="button" value="有回复" onclick="createC3('1')">
+      <input type="button" value="无回复" onclick="createC3('2')">
+      <input type="button" value="-" class="c_button" onclick="removeLastRecordC3()">
+    </div>
+    <div id="C3_container">
+    </div>
+    <br>
+
+    <label class="subTitle">四）会员お問い合わせ：</label>
+    <div class="tips"><b>各按钮说明：</b><br>
+      有回复：该会员邮件已经回复。<br>
+      无回复：该会员邮件没有回复。<br>
+      -：删除最后一条记录。
+    </div>
+    <div><input type="button" value="有回复" onclick="createC4('1')">
+      <input type="button" value="无回复" onclick="createC4('2')">
+      <input type="button" value="-" class="c_button" onclick="removeLastRecordC4()">
+    </div>
+    <div id="C4_container">
+    </div>
+    <br>
+
+    <label class="subTitle">五）其它：</label>
+    <div class="tips"><b>各按钮说明：</b><br>
+      有邮件：增加一条包含邮件输入框的记录。<br>
+      无邮件：增加一条不包含邮件输入框的记录。<br>
+      -：删除最后一条记录。
+    </div>
+    <div><input type="button" value="有邮件" onclick="createC5('1')">
+      <input type="button" value="无邮件" onclick="createC5('2')">
+      <input type="button" value="-" class="c_button" onclick="removeLastRecordC5()">
+    </div>
+    <div id="C5_container">
+
+    </div>    
+
+  </div>
+  <p><label class="subTitleFormat">D、需要告诉下一位值班负责人的事：</label></p>
+  <div class="tips"><b>操作说明：</b><br>
+    1、勾选“开启”选择框后可以输入内容。<br>
+    2、输入内容后点击“格式化”按钮可以自动补全最前面的序号。
+  </div>
+  <div class="inputContainer">
+    <div>
+      <textarea rows="5" cols="100" style="resize: none;" id="D_textarea" disabled>无</textarea>
+    </div>
+    <div class="funcContainer">
+      <input type="checkbox" value="" onclick="checkboxFunc('D')">开启</input><br /><br />
+      <input type="button" value="格式化" style="margin-left:3px;" onclick="formatBtnFunc('D')">
+    </div>
+  </div>
+
+</body>
+
+</html>
+<script>
+window.onload = function () {
+  ready();
+  forbidBackEvent();
+  forbidRefreshEvent();
+}
+
+function firstOnload() {
+  forbidBackEvent();
+  forbidRefreshEvent();
+}
+
+function ready() {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  let currentDate = year + "年" + (month<10?"0"+month:month) + "月" +  (day<10?"0"+day:day) + "日";
+  $("#dateInput").val(currentDate);
+  $('#title').html(currentDate);
+}
+
+function forbidBackEvent() {
+  // 禁止页面后退
+  history.pushState(null, null, document.URL);
+  window.addEventListener('popstate', function(){
+    history.pushState(null, null, document.URL);
+  });
+}
+
+function forbidRefreshEvent() {
+  // 屏蔽可能导致刷新的按钮
+  document.onkeydown = function(e) {
+    e = window.event || e;
+    var keyCd = e.keyCode;
+    if((e.ctrlKey == true && keyCd == 82) || (keyCd == 116) || (e.ctrlKey == true && keyCd == 116) || (keyCd == 114)){
+      e.keyCode = 0;
+      e.returnValue = false;
+      e.cancelBubble = true;
+      return false;
+    }
+    // 屏蔽Ctrl+n
+    if(e.ctrlKey && keyCd == 78){
+      e.keyCode = 0;
+      e.returnValue = false;
+      e.cancelBubble = true;
+      return false;
+    }
+    // 屏蔽F11
+    if(keyCd == 122){
+      e.keyCode = 0;
+      e.returnValue = false;
+      e.cancelBubble = true;
+      return false;
+    }
+    // 屏蔽Shift+F10
+    if((e.shiftKey && keyCd == 121) || (e.ctrlKey && keyCd == 121)){
+      e.keyCode = 0;
+      e.returnValue = false;
+      e.cancelBubble = true;
+      return false;
+    }
+    // 屏蔽Shift+F10
+    if((e.altKey) || (keyCd == 115)){
+      // window.showModelessDialog("about:blank","","dialogWidth:1px;dialogheight:1px");
+      e.keyCode = 0;
+      e.returnValue = false;
+      e.cancelBubble = true;
+      return false;
+    }
+    // 屏蔽右键菜单事件
+    document.oncontextmenu = function(event) {
+      if(window.event) {
+        event = window.event;
+      }
+      return false;
+    }
+  }
+}
+
+
+</script>
+<style>
+  .inputContainer {
+    display: flex;
+  }
+  .funcContainer {
+    padding-left: 5px;
+    padding-top: 5px;
+  }
+  .subTitle {
+    font-size: small;
+    font-weight: bold;
+    color: black;
+  }
+  .c_button {
+    width: 50px;
+  }
+  .tips {
+    border: 1px dashed red;
+    width: 517pt;
+    padding-left: 10px;
+    font-size: small;
+    color: red;
+  }
+  .subTitleFormat{
+    font-weight: bold;
+    background-color: yellow;
+  }
+  #Ccontainer {
+    font-size: small;
+  }
+  div {
+    margin-bottom: 3px;
+  }
+  #titleDiv {
+    font-size: xx-large;
+    font-weight: bold;
+  }
+  #titleTipDiv {
+    font-size: medium;
+    font-weight: bold;
+    color: blue;
+  }
+</style>
