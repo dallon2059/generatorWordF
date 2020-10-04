@@ -102,24 +102,51 @@ var createC1 = function (flg) {
   if (flg === "1") {
     C1_html += `<div id="` + pre + `container" type="1">
     <label>` + C1_num + `、收到会员</label><input type="text" size="10" id="` + pre + `nameInput"><label>的</label><input type="text" size="10"
-    id="` + pre + `courseInput"><label>的付款邮件，已经设置了有效期限，具体操作如下：</label>
-  </div>`;
+    id="` + pre + `courseInput"><label>的付款邮件，已经设置了有效期限，具体操作如下：</label>`;
+    C1_html += `<div></div><label class="subTitle">更新前</label>
+    <div id="` + pre + `updateBefore" class="editDivCss" contenteditable="true">
+    </div>
+    <label class="subTitle">更新操作</label>
+    <div id="` + pre + `updateOpe" class="editDivCss" contenteditable="true">
+    </div>
+    <label class="subTitle">更新后</label>
+    <div id="` + pre + `updateAfter" class="editDivCss" contenteditable="true">
+    </div></div>`;
     
   } else if (flg === "2") {
     C1_html += `<div id="` + pre + `container" type="2">
     <label>` + C1_num + `、会员</label><input type="text" size="10" id="` + pre + `nameInput"><label>购买了</label><input type="text" size="10"
-    id="` + pre + `pointInput"><label>点点数，系统没有自动添加，已经手动添加，并且设置了有效期限，具体操作如下：</label>
-  </div>`;
+    id="` + pre + `pointInput"><label>点点数，系统没有自动添加，已经手动添加，并且设置了有效期限，具体操作如下：</label>`;
+    C1_html += `<div></div><label class="subTitle">更新前</label>
+    <div id="` + pre + `updateBefore" class="editDivCss" contenteditable="true">
+    </div>
+    <label class="subTitle">更新操作</label>
+    <div id="` + pre + `updateOpe" class="editDivCss" contenteditable="true">
+    </div>
+    <label class="subTitle">更新后</label>
+    <div id="` + pre + `updateAfter" class="editDivCss" contenteditable="true">
+    </div></div>`;
 
   } else if (flg === "3") {
     C1_html += `<div id="` + pre + `container" type="3">
-    <label>` + C1_num + `、会员</label><input type="text" size="10" id="` + pre + `nameInput"><label>购买了80点点数，系统没有自动添加，已经手动添加，具体操作如下：</label>
-  </div>`;
+    <label>` + C1_num + `、会员</label><input type="text" size="10" id="` + pre + `nameInput"><label>购买了80点点数，系统没有自动添加，已经手动添加，具体操作如下：</label>`;
+    C1_html += `<div></div><label class="subTitle">更新前</label>
+    <div id="` + pre + `updateBefore" class="editDivCss" contenteditable="true">
+    </div>
+    <label class="subTitle">更新操作</label>
+    <div id="` + pre + `updateOpe" class="editDivCss" contenteditable="true">
+    </div>
+    <label class="subTitle">更新后</label>
+    <div id="` + pre + `updateAfter" class="editDivCss" contenteditable="true">
+    </div></div>`;
+
   } else if (flg === "4") {
     C1_html += `<div id="` + pre + `container" type="4">
     <label>` + C1_num + `、收到会员</label><input type="text" size="10" id="` + pre + `nameInput"><label>的</label><input type="text" size="10"
-    id="` + pre + `courseInput"><label>的付款邮件，系统已经自动处理，没有操作，具体情况如下：</label>
-  </div>`;
+    id="` + pre + `courseInput"><label>的付款邮件，系统已经自动处理，没有操作，具体情况如下：</label>`;
+    C1_html += `<div></div><label class="subTitle">更新前</label>
+    <div id="` + pre + `updateBefore" class="editDivCss" contenteditable="true">
+    </div></div>`;
 
   } else if (flg === "5") {
     C1_html += `<div id="` + pre + `container" type="5">
@@ -336,7 +363,17 @@ var getDataToJson = function () {
   saveAs(blob, "data.json");
 }
 
-
+var getBase64FromImg = function (img) {
+  if (img === undefined || img === "") {
+    return "nothing"
+  }
+  var src = img.getAttribute('src');
+  if (src === undefined || src === "") {
+    return "nothing"
+  }
+  var base64 = src.split("data:image/png;base64,")[1];
+  return base64 == undefined ? "nothing" : base64;
+}
 
 var getData = function () {
   // 获取每个模块记录的个数
@@ -366,39 +403,85 @@ var getData = function () {
     if (type === "1") {
       let $nameInput = $("#C1_" + i + "_nameInput");
       let $courseInput = $("#C1_" + i + "_courseInput");
+      let updateBeforeImg = $("#C1_" + i + "_updateBefore").children().get(0);
+      let updateOpeImg = $("#C1_" + i + "_updateOpe").children().get(0);
+      let updateAfterImg = $("#C1_" + i + "_updateAfter").children().get(0);
       let name = $nameInput.val();
       let course = $courseInput.val();
+      // 图片bASE64获取
+      let updateBeforeBase64 = getBase64FromImg(updateBeforeImg);
+      let updateOpeBase64 = getBase64FromImg(updateOpeImg);
+      let updateAfterBase64 = getBase64FromImg(updateAfterImg);
+
       let subJson = {};
       subJson['name'] = name;
       subJson['course'] = course;
       subJson['type'] = type;
+      subJson['updateBeforeBase64'] = updateBeforeBase64;
+      subJson['updateOpeBase64'] = updateOpeBase64;
+      subJson['updateAfterBase64'] = updateAfterBase64;
       C1_Json[i] = subJson;
     } else if (type === "2") { 
       let $nameInput = $("#C1_" + i + "_nameInput");
       let $pointInput = $("#C1_" + i + "_pointInput");
+      let updateBeforeImg1 = $("#C1_" + i + "_updateBefore").children().get(0);
+      let updateBeforeImg2 = $("#C1_" + i + "_updateBefore").children().get(1);
+      let updateOpeImg = $("#C1_" + i + "_updateOpe").children().get(0);
+      let updateAfterImg1 = $("#C1_" + i + "_updateAfter").children().get(0);
+      let updateAfterImg2 = $("#C1_" + i + "_updateAfter").children().get(1);
       let name = $nameInput.val();
       let point = $pointInput.val();
+      // 图片bASE64获取
+      let updateBefore1Base64 = getBase64FromImg(updateBeforeImg1);
+      let updateBefore2Base64 = getBase64FromImg(updateBeforeImg2);
+      let updateOpeBase64 = getBase64FromImg(updateOpeImg);
+      let updateAfter1Base64 = getBase64FromImg(updateAfterImg1);
+      let updateAfter2Base64 = getBase64FromImg(updateAfterImg2);
+
       let subJson = {};
       subJson['name'] = name;
       subJson['point'] = point;
       subJson['type'] = type;
+      subJson['updateBefore1Base64'] = updateBefore1Base64;
+      subJson['updateBefore2Base64'] = updateBefore2Base64;
+      subJson['updateOpeBase64'] = updateOpeBase64;
+      subJson['updateAfter1Base64'] = updateAfter1Base64;
+      subJson['updateAfter2Base64'] = updateAfter2Base64;
+
       C1_Json[i] = subJson;
     } else if (type === "3") { 
       let $nameInput = $("#C1_" + i + "_nameInput");
+      let updateBeforeImg = $("#C1_" + i + "_updateBefore").children().get(0);
+      let updateOpeImg = $("#C1_" + i + "_updateOpe").children().get(0);
+      let updateAfterImg = $("#C1_" + i + "_updateAfter").children().get(0);
+      // 图片bASE64获取
+      let updateBeforeBase64 = getBase64FromImg(updateBeforeImg);
+      let updateOpeBase64 = getBase64FromImg(updateOpeImg);
+      let updateAfterBase64 = getBase64FromImg(updateAfterImg);
+
       let name = $nameInput.val();
       let subJson = {};
       subJson['name'] = name;
       subJson['type'] = type;
+      subJson['updateBeforeBase64'] = updateBeforeBase64;
+      subJson['updateOpeBase64'] = updateOpeBase64;
+      subJson['updateAfterBase64'] = updateAfterBase64;
+
       C1_Json[i] = subJson;
     } else if (type === "4") {
       let $nameInput = $("#C1_" + i + "_nameInput");
       let $courseInput = $("#C1_" + i + "_courseInput");
+      let updateBeforeImg = $("#C1_" + i + "_updateBefore").children().get(0);
+      // 图片bASE64获取
+      let updateBeforeBase64 = getBase64FromImg(updateBeforeImg);
+
       let name = $nameInput.val();
       let course = $courseInput.val();
       let subJson = {};
       subJson['name'] = name;
       subJson['course'] = course;
       subJson['type'] = type;
+      subJson['updateBeforeBase64'] = updateBeforeBase64;
       C1_Json[i] = subJson;
     } else if (type === "5") {
       let $nameInput = $("#C1_" + i + "_nameInput");
